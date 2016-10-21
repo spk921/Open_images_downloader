@@ -1,0 +1,9 @@
+python >= 3.5
+
+python packages
+numpy
+urllib
+pillow
+scipy
+click
+tqdm
