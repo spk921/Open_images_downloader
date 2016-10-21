@@ -5,15 +5,15 @@ import os
 import csv
 import json
 import click
-from scipy.misc import imresize, imread, imsave
-from urllib import request as rq
 from os.path import join
 from os.path import isdir
 from pathlib import Path
-from subprocess import call
-import multiprocessing as mul
 from tqdm import tqdm
+from subprocess import call
 from concurrent import futures
+import multiprocessing as mul
+from urllib import request as rq
+from scipy.misc import imresize, imread, imsave
 
 #Write Json
 def writeJson(label,filename):
@@ -90,20 +90,20 @@ def checkFile(path):
 #reSize img
 def resizeImg(imgPath,img_size):
     img = imread(imgPath)
+    ratio = 1
     h, w, _ = img.shape
-    scale = 1
     if w >= h:
-        new_w = img_size
-        if w  >= new_w:
-            scale = float(new_w) / w
-        new_h = int(h * scale)
+        w2 = img_size
+        if w  >= w2:
+            ratio = float(w2) / w
+        h2 = int(h * ratio)
     else:
-        new_h = img_size
-        if h >= new_h:
-            scale = float(new_h) / h
-        new_w = int(w * scale)
-    new_img = imresize(img, (new_h, new_w), interp='bilinear')
-    imsave(imgPath,new_img)
+        h2 = img_size
+        if h >= h2:
+            ratio = float(h2) / h
+        w2 = int(w * ratio)
+    img = imresize(img, (h2, w2), interp='bilinear')
+    imsave(imgPath,img)
 
 #Download img
 #Later we can do multi thread apply workers to do faster work
@@ -165,7 +165,7 @@ def downLoadImg(rootPath,img_size,thred_number,infoList,codeTable):
         mapper = [worker.submit(process,code) for code in codeTable]
         for tmp in tqdm(futures.as_completed(mapper), total=len(mapper)):
             pass
-    #for code in codeTable:
+#for code in codeTable:
 # num : number of image match: dic of image class
 #labels from labes.csv
 def getCodeFromLabel(num,match,labels):
