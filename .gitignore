@@ -1,3 +1,4 @@
 *.swo
 *.swp
 *.json
+*.DS_Store
